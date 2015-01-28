@@ -1,0 +1,8 @@
+#!/bin/bash
+
+feedback_id="1419880148148085292"
+#url=http://localhost:8080
+url=http://132.231.11.217:8080/popularioty-api
+
+curl -XGET "$url/feedback/$feedback_id/meta/?from=0&size=10"
+

@@ -1,0 +1,33 @@
+curl -XPOST 'http://localhost:9200/feedback' -d '{
+  "settings": {
+    "index": {
+      "mapping.allow_type_wrapper": true
+    }
+  }
+}'
+
+curl -XPOST 'http://localhost:9200/meta_feedback' -d '{
+  "settings": {
+    "index": {
+      "mapping.allow_type_wrapper": true
+    }
+  }
+}'
+
+
+curl -XPOST 'http://localhost:9200/sdata' -d '{
+  "settings": {
+    "index": {
+      "mapping.allow_type_wrapper": true
+    }
+  }
+}'
+
+curl -XPOST 'http://localhost:9200/reputation_aggregations/' -d '{
+  "settings": {
+    "index": {
+      "mapping.allow_type_wrapper": true
+    }
+  }
+}'
+  

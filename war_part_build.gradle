@@ -1,0 +1,5 @@
+apply plugin: 'war'
+war {
+    baseName = 'Popularioty-api'
+    version =  '0.1.0'
+}
