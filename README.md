@@ -31,7 +31,7 @@ To get the code run:
 Modify the file located in  src/main/resources/application.properties to set port to run popularioty if required. this only applies when you build a jar file...
 
 
-#### Run the compose-idm as a Jar or as a war file
+#### Run the popuarioty-api as a Jar or as a war file
 
 TODO: Adjust compile_war and jar...
 
@@ -47,7 +47,7 @@ Alternatively you can compile the project as a jar file in this way.
 	$ java -jar build/libs/
 
 
-### Testing IDM from the command line
+### Testing from the command line
 
 To test this component there is a set of curl command lines available in the curl/popularioty-calls folder.
 
