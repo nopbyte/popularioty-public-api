@@ -39,6 +39,18 @@ curl -H "Content-Type: application/json;charset=UTF-8" -XGET  -d '{
             "values": [
                 "value","total_count"
             ]
+        },
+        {
+            "reputation_type": "popularity",
+            "values": [
+                "value","total_count"
+            ]
+        },
+        {
+            "reputation_type": "activity",
+            "values": [
+                "value","total_count"
+            ]
         }
     ]
 }' "$url/class_reputation/batch/"

@@ -79,7 +79,7 @@ public class QueryDocumentDatabase implements DisposableBean{
 		
 		QueryBuilder qb = QueryBuilders
                 .boolQuery()
-                .must(QueryBuilders.termQuery("entity_type", entityType));
+                .must(QueryBuilders.termQuery("entity_id", entityId));
         
 		if(entityType !=null && !entityType.equals(""))
 			qb=((BoolQueryBuilder) qb).must(QueryBuilders.termQuery("entity_type", entityType));
