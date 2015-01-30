@@ -3,11 +3,11 @@ types=(service_instance service_object_stream)
 #Number of users, service_instances, service_object_streams
 n=20
 date=`date +%s`
-
+reputations=(popularity feedback activity)
 feedback=$3
 
  for i in `seq 1 $n`;
-        do
+ do
 		id=`echo $2$i`	
 		r=$(($RANDOM % 9+1))
 		echo "Adding entity of type $2 with id $id, and with feedback: $3 rep:$r"
@@ -15,8 +15,17 @@ feedback=$3
 		if [ "$3" != 'no' ]; then
         		./create_feedback_rep.sh $2 $id 
         	fi
-
-        done  
+ 		for j in `seq 1 $n`;
+ 		do
+ 		
+ 			for l in "${reputations[@]}"
+			do
+				r=$(($RANDOM % 9+1))
+   				./create_subreputation.sh $2 $id $r $l
+ 			done 
+ 		done	
+	
+ done  
 
 
 

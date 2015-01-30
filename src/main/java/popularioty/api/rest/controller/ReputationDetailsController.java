@@ -47,7 +47,7 @@ public class ReputationDetailsController
     			HttpHeaders headers = new HttpHeaders();
 		    	try{
     				 
-    				 Map<String,Object> ret = reputationQuery.getAggregatedValueForEntity(entity_type, entity_id);
+    				 Map<String,Object> ret = reputationQuery.getFinalReputationValueForEntity(entity_type, entity_id);
     				 if(ret==null)
     					 new ResponseEntity<>(HttpStatus.NOT_FOUND);
     				 return new ResponseEntity<Object>(ret, headers, HttpStatus.OK);

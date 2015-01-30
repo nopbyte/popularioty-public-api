@@ -1,16 +1,23 @@
 package popularioty.api.services;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import popularioty.api.common.exception.ReputationAPIException;
+import popularioty.api.common.exception.ReputationAPIException.Level;
 import popularioty.api.rest.client.HTTPClient2;
+import popularioty.api.rest.messages.input.Attribute;
+import popularioty.api.rest.messages.input.Entity;
+import popularioty.api.rest.messages.out.ClassReputationResponse;
 import popularioty.api.services.elasticsearch.QueryDocumentDatabase;
 
 
@@ -34,9 +41,9 @@ public class ReputationQueryService {
 		//esHost = "http://localhost:9200";
 		
 	}
-	public Map<String,Object> getAggregatedValueForEntity(String entityType, String entityId) throws ReputationAPIException
+	public Map<String,Object> getFinalReputationValueForEntity(String entityType, String entityId) throws ReputationAPIException
 	{
-		return docService.getAggregatedReputation(entityId, entityType);
+		return docService.getFinalReputation(entityId, entityType);
 	}
 	
 	public List<Map<String,Object>> getFeedbackForEntity(String entityType, String entityId, int from, int size) throws ReputationAPIException
@@ -55,6 +62,52 @@ public class ReputationQueryService {
 		return docService.getMetaFeedbackByFeedback(feedbackId, from, size);
 	}
 	
+	public Map<String, Object> getSubReputationSearch(
+			String entityId, String entityType, String classReputationType) throws ReputationAPIException{
+		
+		return docService.getSingleClassReputation( entityId,  entityType,  classReputationType) ;
+	}
+	
+	
+	public List<ClassReputationResponse> getSubReputationBatchSearch(		
+			List<Entity> entities, List<Attribute> attributes) throws ReputationAPIException{
+		
+			List<ClassReputationResponse> res = new LinkedList<>();
+			if(attributes.size()<=0 || entities.size()<=0)
+				throw new ReputationAPIException("No attributes requested or entities",null,LOG,"No attributes requested",Level.DEBUG,400);
+			boolean rep = false;
+			for(Entity ent: entities)
+			{
+				ClassReputationResponse data = new ClassReputationResponse();
+				data.setEntity_id(ent.getEntity_id());
+				for(Attribute att: attributes)
+				{
+					  Map<String,Object> external= new HashMap<>();
+					  Map<String,Object> internal= new HashMap<>();
+					  Map<String, Object> row;
+					  if(att.getReputation_type().toLowerCase().equals("final"))
+					  {
+						  row = getFinalReputationValueForEntity(ent.getEntity_type(), ent.getEntity_id());
+					  }
+					  else{
+						  row = getSubReputationSearch( ent.getEntity_id(),  ent.getEntity_type(),  att.getReputation_type()) ;
+					  }
+					  for(String value: att.getValues())
+						 if(row.containsKey(value))
+						     internal.put(value,  row.get(value));
+					  
+					  external.put(att.getReputation_type(),internal);
+					  data.setEntity_type((String) row.get("entity_type"));
+					  data.addAttribute(external);
+						  
+					  
+				}
+				res.add(data);
+			}
+		return res;
+	}
+	
+	 
 	
 	/*private Map<String, Object> httpQueryAggregatedReputation(
 			String entityType, String entityId) throws ReputationAPIException {

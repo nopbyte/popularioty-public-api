@@ -10,6 +10,7 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.FuzzyLikeThisFieldQueryBuilder;
 import org.elasticsearch.index.query.FuzzyLikeThisQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
@@ -39,6 +40,8 @@ public class QueryDocumentDatabase implements DisposableBean{
 	private String prop_index_aggregated_rep;
 	private String prop_index_feedback;
 	private String prop_index_meta_feedback;
+	private String prop_index_subreputation;
+	
 	private Node node;
 	private Client client;
 	public QueryDocumentDatabase()
@@ -67,18 +70,48 @@ public class QueryDocumentDatabase implements DisposableBean{
 		this.prop_index_aggregated_rep= properties.getProperty("index.aggregated");
 		this.prop_index_feedback= properties.getProperty("index.feedback");
 		this.prop_index_meta_feedback= properties.getProperty("index.metafeedback");
+		this.prop_index_subreputation=properties.getProperty("index.subreputation");
 	}
 	
 
-	public Map<String, Object> getAggregatedReputation(String entityId, String entityType) throws ReputationAPIException
+	public Map<String, Object> getFinalReputation(String entityId, String entityType) throws ReputationAPIException
 	{
 		
 		QueryBuilder qb = QueryBuilders
                 .boolQuery()
-                .must(QueryBuilders.termQuery("entity_type", entityType))
-                .must(QueryBuilders.termQuery("entity_id", entityId));
+                .must(QueryBuilders.termQuery("entity_type", entityType));
+        
+		if(entityType !=null && !entityType.equals(""))
+			qb=((BoolQueryBuilder) qb).must(QueryBuilders.termQuery("entity_type", entityType));
+		
+		
 		SearchResponse scrollResp = client.prepareSearch()
 				.setIndices(this.prop_index_aggregated_rep)
+				.setQuery(qb)
+				.setFrom(0)
+				.setSize(1)
+				.addSort("date",SortOrder.DESC)
+				.execute().actionGet();
+		
+		for(SearchHit hit:scrollResp.getHits())
+			return hit.getSource();
+		
+		throw new ReputationAPIException("No content found",null,LOG,"Reputation aggregated value not found for entity with id: "+entityId+" and type: "+entityType ,Level.DEBUG,204);
+	}
+	
+	public Map<String, Object> getSingleClassReputation(String entityId, String entityType, String reputationType) throws ReputationAPIException
+	{
+		
+		QueryBuilder qb = QueryBuilders
+                .boolQuery()
+                .must(QueryBuilders.termQuery("sub_reputation_type", reputationType))
+                .must(QueryBuilders.termQuery("entity_id", entityId));
+		
+		if(entityType !=null && !entityType.equals(""))
+			qb=((BoolQueryBuilder) qb).must(QueryBuilders.termQuery("entity_type", entityType));
+		
+		SearchResponse scrollResp = client.prepareSearch()
+				.setIndices(this.prop_index_subreputation)
 				.setQuery(qb)
 				.setFrom(0)
 				.setSize(1)

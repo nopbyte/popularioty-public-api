@@ -23,6 +23,15 @@ curl -XPOST 'http://localhost:9200/sdata' -d '{
   }
 }'
 
+curl -XPOST 'http://localhost:9200/subreputation/' -d '{
+  "settings": {
+    "index": {
+      "mapping.allow_type_wrapper": true
+    }
+  }
+}'
+
+
 curl -XPOST 'http://localhost:9200/reputation_aggregations/' -d '{
   "settings": {
     "index": {
@@ -30,4 +39,5 @@ curl -XPOST 'http://localhost:9200/reputation_aggregations/' -d '{
     }
   }
 }'
+  
   
