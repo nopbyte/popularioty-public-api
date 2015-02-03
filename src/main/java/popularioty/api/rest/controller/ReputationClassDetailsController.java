@@ -46,7 +46,7 @@ public class ReputationClassDetailsController
 	
 	
 	
-	@RequestMapping(value = "class_reputation/", method = RequestMethod.GET, produces = "application/json")
+	@RequestMapping(value = "class_reputation/", method = {RequestMethod.GET,RequestMethod.POST}, produces = "application/json")
     public  @ResponseBody ResponseEntity<Object> getReputationData(
     		@Valid  @RequestBody SubReputationSearch message,
     		HttpServletRequest req) {
@@ -73,7 +73,7 @@ public class ReputationClassDetailsController
 	 
     }
 	
-	@RequestMapping(value = "class_reputation/batch/", method = RequestMethod.GET, produces = "application/json")
+	@RequestMapping(value = "class_reputation/batch/", method = {RequestMethod.GET,RequestMethod.POST}, produces = "application/json")
     public  @ResponseBody ResponseEntity<Object> getOnDemandClassReputation(
     		@Valid  @RequestBody SubReputationBatchSearch message,
     		HttpServletRequest req) {

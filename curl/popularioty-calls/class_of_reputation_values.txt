@@ -15,7 +15,7 @@ curl -H "Content-Type: application/json;charset=UTF-8" -XGET  -d '{
 
 
 
-
+#-XPOST also works
 curl -H "Content-Type: application/json;charset=UTF-8" -XGET  -d '{
     "entities": [
         {
