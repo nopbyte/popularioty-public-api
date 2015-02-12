@@ -84,22 +84,30 @@ public class ReputationQueryService {
 				{
 					  Map<String,Object> external= new HashMap<>();
 					  Map<String,Object> internal= new HashMap<>();
-					  Map<String, Object> row;
-					  if(att.getReputation_type().toLowerCase().equals("final"))
-					  {
-						  row = getFinalReputationValueForEntity(ent.getEntity_type(), ent.getEntity_id());
-					  }
-					  else{
-						  row = getSubReputationSearch( ent.getEntity_id(),  ent.getEntity_type(),  att.getReputation_type()) ;
-					  }
-					  for(String value: att.getValues())
-						 if(row.containsKey(value))
-						     internal.put(value,  row.get(value));
-					  
-					  external.put(att.getReputation_type(),internal);
-					  data.setEntity_type((String) row.get("entity_type"));
-					  data.addAttribute(external);
-						  
+					  Map<String, Object> row = null;
+					  try{
+						   if(att.getReputation_type().toLowerCase().equals("final"))
+						    row = getFinalReputationValueForEntity(ent.getEntity_type(), ent.getEntity_id());
+						   else 
+							  row = getSubReputationSearch( ent.getEntity_id(),  ent.getEntity_type(),  att.getReputation_type()) ;
+					   }catch (ReputationAPIException ex)
+					   {
+						  if(ex.getHTTPErrorCode()==204)
+							  LOG.debug("information not found for");
+						}
+					    if(row == null)
+					    	for(String value: att.getValues())
+					    		internal.put(value,  -1);
+					    else
+					    	for(String value: att.getValues())
+					    		if(row.containsKey(value))
+					    			internal.put(value,  row.get(value));
+						   
+						   external.put(att.getReputation_type(),internal);
+						   data.setEntity_type( (row!=null)?(String) row.get("entity_type"):"");
+						   data.addAttribute(external);
+				
+					    
 					  
 				}
 				res.add(data);
