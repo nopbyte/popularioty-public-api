@@ -30,7 +30,7 @@ import popularioty.api.rest.messages.input.LevenshteinSearch;
 import popularioty.api.rest.messages.input.SubReputationBatchSearch;
 import popularioty.api.rest.messages.input.SubReputationSearch;
 import popularioty.api.rest.messages.out.ClassReputationResponse;
-import popularioty.api.services.ReputationQueryService;
+import popularioty.api.services.QueryService;
 
 
 
@@ -42,7 +42,7 @@ public class ReputationClassDetailsController
 	
 	
 	@Autowired
-    private ReputationQueryService reputationQuery;	
+    private QueryService reputationQuery;	
 	
 	
 	

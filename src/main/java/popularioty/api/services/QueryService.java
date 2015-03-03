@@ -22,9 +22,9 @@ import popularioty.api.services.elasticsearch.QueryDocumentDatabase;
 
 
 @Service
-public class ReputationQueryService {
+public class QueryService {
 	
-	private static Logger LOG = LoggerFactory.getLogger(ReputationQueryService .class);	
+	private static Logger LOG = LoggerFactory.getLogger(QueryService .class);	
 	
 	@Autowired 
 	QueryDocumentDatabase docService;
@@ -35,7 +35,7 @@ public class ReputationQueryService {
 	private String RES_TOTAL= "total";
 	private String RES_SOURCE = "_source";*/
 
-	public ReputationQueryService()
+	public QueryService()
 	{
 		//http = new HTTPClient2<>();
 		//esHost = "http://localhost:9200";

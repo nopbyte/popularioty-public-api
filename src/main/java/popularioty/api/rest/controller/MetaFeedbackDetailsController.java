@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import popularioty.api.common.exception.ReputationAPIException;
 import popularioty.api.rest.messages.input.LevenshteinSearch;
-import popularioty.api.services.ReputationQueryService;
+import popularioty.api.services.QueryService;
 
 
 
@@ -35,7 +35,7 @@ public class MetaFeedbackDetailsController
 	
 	
 	@Autowired
-    private ReputationQueryService reputationQuery;	
+    private QueryService reputationQuery;	
 	
 	
 	@RequestMapping(value = "feedback/{feedback_id}/meta/", method = RequestMethod.GET, produces = "application/json")
