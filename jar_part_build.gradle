@@ -1,4 +1,0 @@
-jar {
-    baseName = 'Popularioty-api'
-    version =  '0.1.0'
-}

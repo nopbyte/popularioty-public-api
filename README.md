@@ -1,6 +1,7 @@
-Popularioty
+Popularioty-public-api
 ===========
 
+This is a project referencing the popularioty-commons and the web application for the popularioty api.
 
 # Installation
 
@@ -10,6 +11,7 @@ Popularioty
 	gradle version 11.1 or higher
 	gradle 1.11 or higher (building only)
 	ElasticSeach	
+	Couchbase
 	git (checkout)
 
 
@@ -68,5 +70,5 @@ To import the project execute the following commands from a shell:
 	$ cd popularioty-public-api
 	$ gradle eclipse
 
-This will generate the proper eclipse files. Afterwards, just execute the 'import existing project into workspace' feature from eclipse.
+This will generate the proper eclipse files (3 projects). Afterwards, just execute the 'import existing project into workspace' feature from eclipse to include the popularity-commons, and -api projects in your workspace.
 
