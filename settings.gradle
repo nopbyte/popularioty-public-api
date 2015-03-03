@@ -1,1 +1,3 @@
-include "popularioty-commons" , "popularioty-api"
+include "popularioty-commons"
+project (':popularioty-commons').projectDir = new File(settingsDir, "../popularioty-commons")
+
