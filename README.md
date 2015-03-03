@@ -21,8 +21,6 @@ To get the code run:
 
 	$ git clone 
 	
-
-
 ### Installing 
 
  
@@ -33,18 +31,22 @@ Modify the file located in  src/main/resources/application.properties to set por
 
 #### Run the popuarioty-api as a Jar or as a war file
 
-TODO: Adjust compile_war and jar...
-
-You can compile automatically a war file by executing this script:
-
-	$ ./compile_war.sh
+To compile the a jar file run
 	
-Afterwards you will find the war file in build/libs/.
+	$ gradle build
 
-Alternatively you can compile the project as a jar file in this way.
-	
-	$ ./compile_jar.sh
-	$ java -jar build/libs/
+To compile a war file uncomment the following lines in build.gradle:
+
+	//apply plugin: 'war'
+	//war {
+	//    baseName = 'popularioty-public-api'
+	//    version =  '0.0.1'
+	//}
+
+And then run:
+
+	$ gradle build
+
 
 
 ### Testing from the command line
@@ -62,11 +64,7 @@ Please keep in mind, we try to keep the documentation as up-to-date as possible.
 
 ## Importing the project as an eclipse java project
 
-To import the project execute the following commands from a shell:
 
-	$ git clone https://github.com/<repo>
-	$ cd popularioty-public-api
-	$ gradle eclipse
+This project requires the popularioty-commons project. Therefore, you must create the eclipse projects from the parent project (i.e. popularioty-api)
 
-This will generate the proper eclipse files. Afterwards, just execute the 'import existing project into workspace' feature from eclipse.
 
