@@ -1,0 +1,24 @@
+#!/bin/bash
+
+id="service_instance1"
+type="service_instance"
+#url=http://localhost:8080
+url=http://132.231.11.217:8080/popularioty-api
+
+curl -XGET "$url/$type/$id/feedback/?from=0&size=10"
+
+
+curl -H "Content-Type: application/json;charset=UTF-8" -XGET  -d '{
+                "text":"about this",
+                "max_query_terms": 10,
+                "levenshtein": 1
+            }' "$url/search_levenshtein/feedback/"
+
+            
+            
+id="service_instance1"
+type="service_instance"
+#url=http://localhost:8080
+url=http://132.231.11.217:8080/popularioty-api
+
+curl -XPOST  -H "Content-Type: application/json;charset=UTF-8"  -H "Authorization: Bearer $TOKEN"   -d '{"title":"asdf","text":"interesting stuff","rating":4}' "$url/$type/$id/feedback/"

@@ -1,0 +1,56 @@
+#!/bin/bash
+
+id="service_instance1"
+type="service_instance"
+class="activity"
+url=http://localhost:8080
+#url=http://132.231.11.217:8080/popularioty-api
+
+
+curl -H "Content-Type: application/json;charset=UTF-8" -XGET  -d '{
+                "entity_id":"'$id'",
+                "entity_type": "'$type'",
+                "sub_reputation_type": "'$class'"
+            }' "$url/class_reputation/"
+
+
+
+#-XPOST also works
+curl -H "Content-Type: application/json;charset=UTF-8" -XGET  -d '{
+    "entities": [
+        {
+            "entity_id": "service_instance1",
+            "entity_type": "service_instance"
+        },
+        {
+            "entity_id": "service_instance2",
+            "entity_type": "service_instance"
+        }
+    ],
+    "attributes": [
+        {
+            "reputation_type": "final",
+            "values": [
+                "reputation"
+            ]
+        },
+        {
+            "reputation_type": "feedback",
+            "values": [
+                "value","total_count"
+            ]
+        },
+        {
+            "reputation_type": "popularity",
+            "values": [
+                "value","total_count"
+            ]
+        },
+        {
+            "reputation_type": "activity",
+            "values": [
+                "value","total_count"
+            ]
+        }
+    ]
+}' "$url/class_reputation/batch/"
