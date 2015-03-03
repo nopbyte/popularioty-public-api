@@ -29,7 +29,7 @@ import org.springframework.core.io.ClassPathResource;
 
 import popularioty.api.common.exception.ReputationAPIException;
 import popularioty.api.common.exception.ReputationAPIException.Level;
-import popularioty.api.commons.elasticsearch.ESCommons;
+import popularioty.api.commons.elasticsearch2.ESCommons;
 import popularioty.api.rest.client.HTTPClient2;
 @Service
 public class QueryDocumentDatabase implements DisposableBean{

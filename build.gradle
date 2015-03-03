@@ -7,6 +7,25 @@ buildscript {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:1.0.0.RC5")
     }
 }
+//to include sub projects
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'eclipse'
+
+    repositories {
+       mavenCentral()
+    }
+
+    dependencies {
+        testCompile 'junit:junit:4.11'
+    }
+
+    version = '1.0'
+
+    jar {
+        manifest.attributes provider: 'gradle'
+    }
+}
 
 apply plugin: 'java'
 apply plugin: 'eclipse'
@@ -79,3 +98,10 @@ test {
 task wrapper(type: Wrapper) {
     gradleVersion = '1.11'
 }
+//to build sub projects properly
+
+
+allprojects {
+    task hello << { task -> println "I'm $task.project.name" }
+}
+

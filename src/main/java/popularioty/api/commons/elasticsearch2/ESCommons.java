@@ -1,4 +1,4 @@
-package popularioty.api.commons.elasticsearch;
+package popularioty.api.commons.elasticsearch2;
 
 import java.util.Map;
 
