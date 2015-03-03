@@ -58,6 +58,7 @@ dependencies {
     
     compile 'com.couchbase.client:java-client:2.1.0'
     compile 'org.elasticsearch:elasticsearch:1.3.4'
+    compile project(':popularioty-commons')
 
     
     testCompile 'org.springframework:spring-test'
