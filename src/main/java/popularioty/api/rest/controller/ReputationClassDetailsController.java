@@ -23,14 +23,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import popularioty.api.common.exception.ReputationAPIException;
 import popularioty.api.rest.messages.input.Attribute;
 import popularioty.api.rest.messages.input.Entity;
 import popularioty.api.rest.messages.input.LevenshteinSearch;
 import popularioty.api.rest.messages.input.SubReputationBatchSearch;
 import popularioty.api.rest.messages.input.SubReputationSearch;
 import popularioty.api.rest.messages.out.ClassReputationResponse;
-import popularioty.api.services.QueryService;
+import popularioty.api.services.AggregatedReputationSearchService;
+import popularioty.api.services.FeedbackSearchService;
+import popularioty.commons.exception.PopulariotyException;
 
 
 
@@ -42,7 +43,7 @@ public class ReputationClassDetailsController
 	
 	
 	@Autowired
-    private QueryService reputationQuery;	
+    private AggregatedReputationSearchService reputationQuery;	
 	
 	
 	
@@ -59,13 +60,13 @@ public class ReputationClassDetailsController
 					 new ResponseEntity<>(HttpStatus.NOT_FOUND);
 				 return new ResponseEntity<Object>(ret, headers, HttpStatus.OK);
 	    	 }
-	    	 catch(ReputationAPIException rep){
+	    	 catch(PopulariotyException rep){
 	    		 //since the creation of the exception generated the log entries for the stacktrace, we don't do it again here
 	    		 return new ResponseEntity<Object>(rep.getErrorAsMap(), headers, HttpStatus.valueOf(rep.getHTTPErrorCode()));
 	    	 } 
 	    	 catch(Exception e)
 	    	 {
-	    		 String s = ReputationAPIException.getStackTrace(e);
+	    		 String s = PopulariotyException.getStackTrace(e);
 	    		 LOG.error(s);
 	    		 return new ResponseEntity<Object>(null, headers, HttpStatus.INTERNAL_SERVER_ERROR);	 
 	    	 }
@@ -87,13 +88,13 @@ public class ReputationClassDetailsController
 					 new ResponseEntity<>(HttpStatus.NOT_FOUND);
 				 return new ResponseEntity<Object>(ret, headers, HttpStatus.OK);
 	    	 }
-	    	 catch(ReputationAPIException rep){
+	    	 catch(PopulariotyException rep){
 	    		 //since the creation of the exception generated the log entries for the stacktrace, we don't do it again here
 	    		 return new ResponseEntity<Object>(rep.getErrorAsMap(), headers, HttpStatus.valueOf(rep.getHTTPErrorCode()));
 	    	 } 
 	    	 catch(Exception e)
 	    	 {
-	    		 String s = ReputationAPIException.getStackTrace(e);
+	    		 String s = PopulariotyException.getStackTrace(e);
 	    		 LOG.error(s);
 	    		 return new ResponseEntity<Object>(null, headers, HttpStatus.INTERNAL_SERVER_ERROR);	 
 	    	 }

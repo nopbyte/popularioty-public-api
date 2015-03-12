@@ -17,8 +17,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import popularioty.api.common.exception.ReputationAPIException;
-import popularioty.api.services.QueryService;
+import popularioty.api.services.FeedbackSearchService;
+import popularioty.api.services.FinalReputationSearchService;
+import popularioty.commons.exception.PopulariotyException;
 
 
 
@@ -30,12 +31,8 @@ public class ReputationDetailsController
 	
 	
 	@Autowired
-    private QueryService reputationQuery;
+    private FinalReputationSearchService reputationQuery;
 	 
-	
-	
-	
-	
 	
 	@RequestMapping(value = "{entity_type}/{entity_id}/reputation/", method = RequestMethod.GET, produces = "application/json")
         public  @ResponseBody ResponseEntity<Object> getReputationData( 
@@ -52,13 +49,13 @@ public class ReputationDetailsController
     					 new ResponseEntity<>(HttpStatus.NOT_FOUND);
     				 return new ResponseEntity<Object>(ret, headers, HttpStatus.OK);
 		    	 }
-		    	 catch(ReputationAPIException rep){
+		    	 catch(PopulariotyException rep){
 		    		 //since the creation of the exception generated the log entries for the stacktrace, we don't do it again here
 		    		 return new ResponseEntity<Object>(rep.getErrorAsMap(), headers, HttpStatus.valueOf(rep.getHTTPErrorCode()));
 		    	 } 
 		    	 catch(Exception e)
 		    	 {
-		    		 String s = ReputationAPIException.getStackTrace(e);
+		    		 String s = PopulariotyException.getStackTrace(e);
 		    		 LOG.error(s);
 		    		 return new ResponseEntity<Object>(null, headers, HttpStatus.INTERNAL_SERVER_ERROR);	 
 		    	 }

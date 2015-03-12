@@ -15,8 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
-import popularioty.api.common.exception.ReputationAPIException;
 import popularioty.api.services.idm.AuthenticateUser;
+import popularioty.api.services.io.StoreDocumentsService;
+import popularioty.commons.exception.PopulariotyException;
 
 @Service
 public class FeedbackStorageService{
@@ -25,7 +26,7 @@ public class FeedbackStorageService{
 	private String feedbackBucketName;
 	
 	@Autowired
-	private PersistentStorage storage;
+	private StoreDocumentsService storage;
 
 	@Autowired
 	private AuthenticateUser auth;
@@ -59,7 +60,7 @@ public class FeedbackStorageService{
         //this.cluster = CouchbaseCluster.create(this.host);
 	}
 	
-	public Map createFeedbackEntry(String entity_id, String entity_type, String token, String title, String text, int rating) throws ReputationAPIException
+	public Map createFeedbackEntry(String entity_id, String entity_type, String token, String title, String text, int rating) throws PopulariotyException
 	{
         
 		String id = UUID.randomUUID().toString().replaceAll("-", "");

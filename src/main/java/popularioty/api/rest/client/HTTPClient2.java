@@ -14,8 +14,8 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-import popularioty.api.common.exception.ReputationAPIException;
-import popularioty.api.common.exception.ReputationAPIException.Level;
+import popularioty.commons.exception.PopulariotyException;
+import popularioty.commons.exception.PopulariotyException.Level;
 
 
 public class HTTPClient2<T> {
@@ -27,7 +27,7 @@ public class HTTPClient2<T> {
 	public static final String POST ="post";
 
 	
-	public ResponseEntity<T> getDataHTTPCall(String messageType, String url, MultiValueMap<String, String> postData,HttpHeaders headers, Class returnTypeImplementation) throws ReputationAPIException
+	public ResponseEntity<T> getDataHTTPCall(String messageType, String url, MultiValueMap<String, String> postData,HttpHeaders headers, Class returnTypeImplementation) throws PopulariotyException
 	{
 		ResponseEntity<T> responseEntity = null;
 		try
@@ -51,16 +51,16 @@ public class HTTPClient2<T> {
 		catch(HttpClientErrorException clientError)
 		{
 			if(clientError.getStatusCode().equals(HttpStatus.UNAUTHORIZED))
-					throw new ReputationAPIException("Authentication failed, wrong credentials ",clientError,LOG,"Unauthorized while attempting to get token to "+url+" with Headers: "+headers+" and postdata "+postData,Level.ERROR,401);
-			throw new ReputationAPIException("An error ocurred during HTTP communication",clientError,LOG,"HttClientError  while attempting "+messageType+" message to "+url+" with Headers: "+headers+" and postdata "+postData,Level.ERROR,500);
+					throw new PopulariotyException("Authentication failed, wrong credentials ",clientError,LOG,"Unauthorized while attempting to get token to "+url+" with Headers: "+headers+" and postdata "+postData,Level.ERROR,401);
+			throw new PopulariotyException("An error ocurred during HTTP communication",clientError,LOG,"HttClientError  while attempting "+messageType+" message to "+url+" with Headers: "+headers+" and postdata "+postData,Level.ERROR,500);
 		}
 		catch(RestClientException restE)
 		{
-			throw new ReputationAPIException("An error ocurred during HTTP communication",restE,LOG,"RestException  while attempting "+messageType+" message to "+url+" with Headers: "+headers+" and postdata "+postData,Level.ERROR,500);
+			throw new PopulariotyException("An error ocurred during HTTP communication",restE,LOG,"RestException  while attempting "+messageType+" message to "+url+" with Headers: "+headers+" and postdata "+postData,Level.ERROR,500);
 		}
 		catch(Exception e)
 		{
-			throw new ReputationAPIException("An error ocurred during HTTP communication",e,LOG,"Unknown exception while attempting "+messageType+" message to "+url+" with Headers: "+headers+" and postdata "+postData,Level.ERROR,500);	
+			throw new PopulariotyException("An error ocurred during HTTP communication",e,LOG,"Unknown exception while attempting "+messageType+" message to "+url+" with Headers: "+headers+" and postdata "+postData,Level.ERROR,500);	
 		}
 		return responseEntity;
 		
