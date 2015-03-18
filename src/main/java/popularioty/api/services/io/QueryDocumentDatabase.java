@@ -1,6 +1,7 @@
 package popularioty.api.services.io;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +10,7 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
@@ -16,36 +18,46 @@ import popularioty.commons.exception.PopulariotyException;
 import popularioty.commons.services.search.FeedbackReputationSearch;
 import popularioty.commons.services.search.FinalReputationSearch;
 import popularioty.commons.services.search.MultiTypeReputationSearch;
+import popularioty.commons.services.searchengine.factory.ElasticSearchNode;
 import popularioty.commons.services.searchengine.factory.SearchEngineFactory;
 import popularioty.commons.services.searchengine.factory.SearchProvider;
+import popularioty.commons.services.storageengine.factory.StorageFactory;
+import popularioty.commons.services.storageengine.factory.StorageProvider;
 @Service
 public class QueryDocumentDatabase implements DisposableBean{
 
 	private static Logger LOG = LoggerFactory.getLogger(QueryDocumentDatabase.class);	
 	
-
+	@Autowired
+	private StoreDocumentsService storageService;
+	
 	private SearchProvider provider;
+	
+	private Map<String, Object> properties; 
+	
 	private FeedbackReputationSearch feedbackSearch;
+	
 	private FinalReputationSearch finalSearch;
+	
 	private MultiTypeReputationSearch multiSearch;
 	
 	public QueryDocumentDatabase()
 	{
 		// load properties file from classpath
-        Properties properties = new Properties();
+        Properties props = new Properties();
         ClassPathResource resource = new ClassPathResource("search.properties");
         try {
-            properties.load(resource.getInputStream());
-            Map<String, Object> map = new HashMap<String, Object>();
-            for (String key : properties.stringPropertyNames()) {
-                map.put(key, properties.getProperty(key));
+            props.load(resource.getInputStream());
+            properties = new HashMap<String, Object>();
+            for (String key : props.stringPropertyNames()) {
+                properties.put(key, props.getProperty(key));
             }
             //in this way the api is independent of the class produced by the factory
-            provider = SearchEngineFactory.getSearchProvider(properties.getProperty("search.engine"));
-            provider.init(map);
-            feedbackSearch = new FeedbackReputationSearch(map,provider );
-            finalSearch = new FinalReputationSearch(map,provider );
-            multiSearch = new MultiTypeReputationSearch(map,provider );
+            provider = SearchEngineFactory.getSearchProvider(props.getProperty("search.engine"));
+            provider.init(properties);
+            feedbackSearch = new FeedbackReputationSearch(properties,provider );
+            finalSearch = new FinalReputationSearch(properties,provider );
+            multiSearch = new MultiTypeReputationSearch(properties,provider );
          
         	
         } catch (IOException e) {
@@ -61,27 +73,33 @@ public class QueryDocumentDatabase implements DisposableBean{
 
 	public Map<String, Object> getFinalReputation(String entityId, String entityType) throws PopulariotyException
 	{
-			return finalSearch.getFinalReputation(entityId, entityType);
+		String id = finalSearch.getFinalReputation(entityId, entityType);	
+		List<String>list = Collections.singletonList(id);
+		return storageService.getData(list,(String) properties.get("index.aggregated"),null).get(0);
+		
 	}
 	
 	public Map<String, Object> getSingleClassReputation(String entityId, String entityType, String reputationType) throws PopulariotyException
 	{
-			return multiSearch.getSingleClassReputation(entityId, entityType, reputationType);
+		String id = multiSearch.getSingleClassReputation(entityId, entityType, reputationType);
+		List<String>list = Collections.singletonList(id);
+		return storageService.getData(list,(String) properties.get("index.subreputation"),null).get(0);
 	}
 
-	public List<Map<String, Object>> getFeedbackByEntity(String entityId, String entityType, int from, int size) throws PopulariotyException
+	public List<Map<String, Object>> getFeedbackByEntity(String entityId, String entityType, String groupId, int from, int size) throws PopulariotyException
 	{
-		return feedbackSearch.getFeedbackByEntity(entityId, entityType, from, size);
+		return storageService.getData(feedbackSearch.getFeedbackByEntity(entityId, entityType, groupId, from, size),(String) properties.get("index.feedback"),"feedback_id");
 	}
 
 	public List<Map<String, Object>> getMetaFeedbackByFeedback(String feedbackId, int from, int size) throws PopulariotyException
 	{
-		return feedbackSearch.getMetaFeedbackByFeedback(feedbackId, from, size);
+		return  storageService.getData(feedbackSearch.getMetaFeedbackByFeedback(feedbackId, from, size),((String) properties.get("index.metafeedback")),"meta_feedback_id");
+		
 	}
 	
 	public List<Map<String, Object>> getFeedbackLevenshteinString(String text, int maxQuerySize, int levenshtein) throws PopulariotyException
 	{
-		return feedbackSearch.getFeedbackLevenshteinString(text, maxQuerySize, levenshtein);		
+		return storageService.getData(feedbackSearch.getFeedbackLevenshteinString(text, maxQuerySize, levenshtein),(String) properties.get("index.feedback"),"feedback_id");
 	}
 	/**
 	 * This method will ensure that when the web applications goes down, the search node is acutally closed.

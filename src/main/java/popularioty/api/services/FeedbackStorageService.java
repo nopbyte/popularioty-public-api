@@ -32,7 +32,7 @@ public class FeedbackStorageService{
 	private AuthenticateUser auth;
 	
 	private void readProperties(Properties properties) {
-		this.feedbackBucketName = properties.getProperty("feedback.bucket");
+		this.feedbackBucketName= (String) properties.get("index.feedback");
 	}
 	
 	private Object getGroupsFromMemberships(Object object) {
@@ -49,7 +49,7 @@ public class FeedbackStorageService{
 	public FeedbackStorageService(){
 		// load properties file from classpath
         Properties properties = new Properties();
-        ClassPathResource resource = new ClassPathResource("document-set.properties");
+        ClassPathResource resource = new ClassPathResource("search.properties");
         try {
             properties.load(resource.getInputStream());
             readProperties(properties);

@@ -1,7 +1,6 @@
 package popularioty.api.rest.controller;
 
 
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,14 +18,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import popularioty.api.rest.messages.input.FeedbackCreate;
-import popularioty.api.rest.messages.input.LevenshteinSearch;
-import popularioty.api.rest.messages.input.SubReputationSearch;
 import popularioty.api.services.FeedbackStorageService;
-import popularioty.api.services.FeedbackSearchService;
 import popularioty.commons.exception.PopulariotyException;
 
 

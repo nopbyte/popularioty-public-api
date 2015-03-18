@@ -42,6 +42,7 @@ public class FeedbackDetailsController
         public  @ResponseBody ResponseEntity<Object> getReputationData( 
         		@PathVariable(value="entity_id") String entity_id,
         		@PathVariable(value="entity_type") String entity_type,
+        		@PathVariable(value="group_id") String gropId,
         		@RequestParam("from") int from,
         		@RequestParam("size") int size,
         		HttpServletRequest req) {
@@ -50,7 +51,7 @@ public class FeedbackDetailsController
     			HttpHeaders headers = new HttpHeaders();
 		    	try{
     				 
-    				 List<Map<String,Object>> ret = reputationQuery.getFeedbackForEntity(entity_type, entity_id, from, size);
+    				 List<Map<String,Object>> ret = reputationQuery.getFeedbackForEntity(entity_type, entity_id, gropId, from, size);
     				 if(ret==null)
     					 new ResponseEntity<>(HttpStatus.NOT_FOUND);
     				 return new ResponseEntity<Object>(ret, headers, HttpStatus.OK);

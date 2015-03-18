@@ -2,7 +2,7 @@ package popularioty.api.services.io;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -14,19 +14,8 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
 import popularioty.commons.exception.PopulariotyException;
-import popularioty.commons.exception.PopulariotyException.Level;
-import popularioty.commons.services.searchengine.factory.SearchProvider;
 import popularioty.commons.services.storageengine.factory.StorageFactory;
 import popularioty.commons.services.storageengine.factory.StorageProvider;
-
-import com.couchbase.client.core.BackpressureException;
-import com.couchbase.client.core.RequestCancelledException;
-import com.couchbase.client.deps.io.netty.handler.timeout.TimeoutException;
-import com.couchbase.client.java.Bucket;
-import com.couchbase.client.java.CouchbaseCluster;
-import com.couchbase.client.java.document.JsonDocument;
-import com.couchbase.client.java.document.json.JsonArray;
-import com.couchbase.client.java.document.json.JsonObject;
 
 @Service
 public class StoreDocumentsService implements DisposableBean{
@@ -45,7 +34,7 @@ public class StoreDocumentsService implements DisposableBean{
             for (String key : properties.stringPropertyNames()) {
                 map.put(key, properties.getProperty(key));
             }
-            store = StorageFactory.getSearchProvider(properties.getProperty("storage.engine"));
+            store = StorageFactory.getStorageProvider(properties.getProperty("storage.engine"));
             store.init(map);
             
         }   catch (IOException e) {
@@ -61,6 +50,36 @@ public class StoreDocumentsService implements DisposableBean{
 	public Map<String, Object> storeData(String id, Map<String, Object> data, String set) throws PopulariotyException
 	{
 		return store.storeData(id, data, set);
+	}
+	/**
+	 * 
+	 * @param ids list of strings (ids)
+	 * @param set set where the documents need to be looked for
+	 * @param idLabel label used to add the id to the resulting map for each result. If null is provided no id is added
+	 * @return List of HashMaps containing the documents in the database
+	 * @throws PopulariotyException
+	 */
+	public List<Map<String, Object>> getData(List<String> ids, String set, String idLabel) throws PopulariotyException
+	{
+		List<Map<String, Object>>  ret = new LinkedList<>();
+		Map<String, Object> curr = null;
+		
+		for(String id: ids)
+		{
+			try{
+				curr = store.getData(id, set);
+				if(idLabel !=null)
+					curr.put(idLabel,id);
+				ret.add(curr);
+			}catch(PopulariotyException ex)
+			{
+				if(ex.getHTTPErrorCode()!=404)
+					throw ex;
+				//else ig means that no content was found... we can live with that..
+			}
+		}
+		return ret;
+		
 	}
 	
 	@Override
