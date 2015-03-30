@@ -20,22 +20,22 @@ import popularioty.api.services.io.DocumentDatabase;
 import popularioty.commons.exception.PopulariotyException;
 
 @Service
-public class FeedbackStorageService{
+public class MetaFeedbackStorageService{
 
-	private static Logger LOG = LoggerFactory.getLogger(FeedbackStorageService.class);	
-	private String feedbackBucketName;
-	
+	private static Logger LOG = LoggerFactory.getLogger(MetaFeedbackStorageService.class);	
+	private String metaFeedbackSetName;
+
 	@Autowired
 	private DocumentDatabase storage;
 	
 	@Autowired
-	private FinalReputationSearchService repService;
+	private DocumentDatabase search;
 
 	@Autowired
 	private AuthenticateUser auth;
 	
 	private void readProperties(Properties properties) {
-		this.feedbackBucketName= (String) properties.get("index.feedback");
+		this.metaFeedbackSetName= (String) properties.get("index.metafeedback");
 	}
 	
 	private Object getGroupsFromMemberships(Object object) {
@@ -49,7 +49,7 @@ public class FeedbackStorageService{
 		}
 		return ret;
 	}	
-	public FeedbackStorageService(){
+	public MetaFeedbackStorageService(){
 		// load properties file from classpath
         Properties properties = new Properties();
         ClassPathResource resource = new ClassPathResource("search.properties");
@@ -63,14 +63,14 @@ public class FeedbackStorageService{
         //this.cluster = CouchbaseCluster.create(this.host);
 	}
 	
-	public Map createFeedbackEntry(String entity_id, String entity_type, String token, String title, String text, int rating) throws PopulariotyException
+	public Map createMetaFeedbackEntry(String feedbackId, String token, String title, String text, int rating) throws PopulariotyException
 	{
         
 		String id = UUID.randomUUID().toString().replaceAll("-", "");
 		Map<String,Object> attributes = auth.attributesFromUser(token);
+		Map<String,Object> feedback = search.getFeedbackById(feedbackId);
 		
-		Map<String,Object> reputation = repService.getFinalReputationValueForEntity( "user", (String) attributes.get("id"));
-		int repValue = 4;
+
 		//TODO include verification that the entity has been used indeed before by this user.
 		
 		//...........................................
@@ -82,7 +82,7 @@ public class FeedbackStorageService{
 		//...........................................
 		//...........................................
 		//...........................................
-		// INCLUDE REPUTATION OF THE USER IN THE DOCUMENT!! instead of using 4...
+		// INCLUDE REPUTATION OF THE USER IN THE DOCUMENT!! THIS AFFECTS HOW HEAVY THE FEEDBACK IS!
 		//...........................................
 		//...........................................
 		//...........................................
@@ -93,20 +93,18 @@ public class FeedbackStorageService{
 		//...........................................
 		System.out.println(attributes.toString());
 		Map<String, Object> document = new HashMap<String, Object>();
-		document.put("feedback_id", id);
-		document.put("entity_id", entity_id);
-		document.put("entity_type", entity_type);
+		document.put("feedback", feedback);
+		document.put("meta_feedback", id);
 		document.put("title", title);
 		document.put("text", text);
 		document.put("rating", rating);
 		document.put("date", System.currentTimeMillis());
 		document.put("user_id", attributes.get("id"));
-		document.put("user_reputation", repValue);
 		document.put("user_name", attributes.get("username"));
 		document.put("user_groups", getGroupsFromMemberships(attributes.get("approvedMemberships")));
 		
-		LOG.info("Feedback stored for entity_id "+entity_id);
-		return storage.storeData(id, document,feedbackBucketName);
+		LOG.info("MetaFeedback stored for feedback with id"+feedbackId);
+		return storage.storeData(id, document,metaFeedbackSetName);
 		
 	}
 

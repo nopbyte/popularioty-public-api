@@ -42,7 +42,7 @@ public class FeedbackDetailsController
         public  @ResponseBody ResponseEntity<Object> getReputationData( 
         		@PathVariable(value="entity_id") String entity_id,
         		@PathVariable(value="entity_type") String entity_type,
-        		@PathVariable(value="group_id") String gropId,
+        		@RequestParam(required=false,value="group_id") String gropId,
         		@RequestParam("from") int from,
         		@RequestParam("size") int size,
         		HttpServletRequest req) {
