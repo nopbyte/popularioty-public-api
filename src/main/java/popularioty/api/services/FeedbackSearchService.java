@@ -72,7 +72,7 @@ public class FeedbackSearchService {
 		
 		Query q = new Query(QueryType.FUZZY_TEXT_SEARCH);
 		
-		q.addCriteria(new SearchCriteria<String>("test", text , SearchCriteriaType.LIKE));
+		q.addCriteria(new SearchCriteria<String>("text", text , SearchCriteriaType.LIKE));
 		q.addCriteria(new SearchCriteria<String>("title", text , SearchCriteriaType.LIKE));
 		q.addCriteria(new SearchCriteria<Integer>( SearchCriteriaConstants.FIELD_LEVENSHTEIN,levenshtein, SearchCriteriaType.MUST_MATCH));
 		

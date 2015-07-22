@@ -70,7 +70,7 @@ public class FeedbackDetailsController
     	 
         }
 	
-	@RequestMapping(value = "search_levenshtein/feedback/", method = RequestMethod.GET, produces = "application/json")
+	@RequestMapping(value = "search_levenshtein/feedback/", method = { RequestMethod.GET, RequestMethod.POST }, produces = "application/json")
     public  @ResponseBody ResponseEntity<Object> getReputationData(
     		@Valid  @RequestBody LevenshteinSearch message,
     		HttpServletRequest req) {

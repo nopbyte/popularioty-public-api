@@ -34,9 +34,6 @@ public class MetaFeedbackStorageService{
 	@Autowired
 	private AuthenticateUser auth;
 	
-	private void readProperties(Properties properties) {
-		this.metaFeedbackSetName= (String) properties.get("index.metafeedback");
-	}
 	
 	private Object getGroupsFromMemberships(Object object) {
 		List list = (List) object;
@@ -51,25 +48,17 @@ public class MetaFeedbackStorageService{
 	}	
 	public MetaFeedbackStorageService(){
 		// load properties file from classpath
-        Properties properties = new Properties();
-        ClassPathResource resource = new ClassPathResource("search.properties");
-        try {
-            properties.load(resource.getInputStream());
-            readProperties(properties);
-            
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        //this.cluster = CouchbaseCluster.create(this.host);
+        Map<String, Object> properties = properties = PropertiesLoader.loadSearchConfiuration("search.properties");
+		this.metaFeedbackSetName= (String) properties.get("index.metafeedback");
 	}
 	
-	public Map createMetaFeedbackEntry(String feedbackId, String token, String title, String text, int rating) throws PopulariotyException
+	public Map createMetaFeedbackEntry(String feedbackId, String token, String title, String text, boolean rating) throws PopulariotyException
 	{
         
 		String id = UUID.randomUUID().toString().replaceAll("-", "");
 		Map<String,Object> attributes = auth.attributesFromUser(token);
 		Map<String,Object> feedback = search.getFeedbackById(feedbackId);
-		
+		int repValue = 4;
 
 		//TODO include verification that the entity has been used indeed before by this user.
 		
@@ -100,6 +89,7 @@ public class MetaFeedbackStorageService{
 		document.put("rating", rating);
 		document.put("date", System.currentTimeMillis());
 		document.put("user_id", attributes.get("id"));
+		document.put("user_reputation", repValue);
 		document.put("user_name", attributes.get("username"));
 		document.put("user_groups", getGroupsFromMemberships(attributes.get("approvedMemberships")));
 		

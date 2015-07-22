@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import popularioty.api.rest.messages.input.FeedbackCreate;
+import popularioty.api.rest.messages.input.MetaFeedbackCreate;
 import popularioty.api.services.FeedbackStorageService;
 import popularioty.api.services.MetaFeedbackStorageService;
 import popularioty.commons.exception.PopulariotyException;
@@ -42,7 +43,7 @@ public class MetaFeedbackCommandsController
         public  @ResponseBody ResponseEntity<Object> getReputationData( 
         		@RequestHeader("Authorization") String token,
         		@PathVariable(value="entity_id") String entity_id,
-        		@Valid  @RequestBody FeedbackCreate message,
+        		@Valid  @RequestBody MetaFeedbackCreate message,
         		HttpServletRequest req) {
 		    	     	
     			HttpHeaders headers = new HttpHeaders();
@@ -51,7 +52,7 @@ public class MetaFeedbackCommandsController
 		    		Map ret = null;
 		    		ret = metafeedbackService.createMetaFeedbackEntry(entity_id, token,
 		    										message.getTitle(), message.getText(), 
-		    										message.getRating());
+		    										message.isRating());
     				return new ResponseEntity<Object>(ret, headers, HttpStatus.OK);
 		    	 }
 		    	 catch(PopulariotyException rep){
