@@ -93,7 +93,8 @@ public class MetaFeedbackStorageService{
 		document.put("user_id", attributes.get("id"));
 		document.put("user_reputation", repValue);
 		document.put("user_name", attributes.get("username"));
-		document.put("user_groups", getGroupsFromMemberships(attributes.get("approvedMemberships")));
+		if(attributes != null)
+			document.put("user_groups", getGroupsFromMemberships(attributes.get("approvedMemberships")));
 		
 		LOG.info("MetaFeedback stored for feedback with id"+feedbackId);
 		return storage.storeData(id, document,metaFeedbackSetName);
