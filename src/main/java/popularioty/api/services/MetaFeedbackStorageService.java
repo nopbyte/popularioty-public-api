@@ -84,8 +84,10 @@ public class MetaFeedbackStorageService{
 		Map<String, Object> document = new HashMap<String, Object>();
 		document.put("feedback", feedback);
 		document.put("meta_feedback", id);
-		document.put("title", title);
-		document.put("text", text);
+		if(title != null)
+			document.put("title", title);
+		if(text != null)
+			document.put("text", text);
 		document.put("rating", rating);
 		document.put("date", System.currentTimeMillis());
 		document.put("user_id", attributes.get("id"));
