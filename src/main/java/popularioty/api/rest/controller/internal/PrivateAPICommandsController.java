@@ -46,21 +46,7 @@ public class PrivateAPICommandsController
 	//TODO fix this for the future with some authentication technique...
 	private String fixedToken = "IYao9AeJcaUzhLPB0P1B";
 	
-	private boolean inSet(String x, List<String> s)
-	{
-		for(String st: s)
-		{
-			if(x.equals(st))
-				return true;
-			else{
-				char []one = x.toCharArray();
-				char []two = st.toCharArray();
-				System.out.println(new String(one));
-				System.out.println(new String(two));
-			}
-		}
-		return false;
-	}
+	
 	public PrivateAPICommandsController()
 	{
 		//to provide feedback massively for demo.
@@ -81,7 +67,7 @@ public class PrivateAPICommandsController
         		@Valid  @RequestBody List<Map<String,Object>> message,
         		HttpServletRequest req) 
         {
-		    if(!inSet(set,allowedSets) || !token.equals(fixedToken))	
+		    if(!allowedSets.contains(set) || !token.equals(fixedToken))	
 		    	return new ResponseEntity<Object>( HttpStatus.FORBIDDEN);
 			String id = "";
 			HttpHeaders headers = new HttpHeaders();
