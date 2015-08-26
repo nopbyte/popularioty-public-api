@@ -32,7 +32,7 @@ public class PropertiesLoader {
 		 try {
 	            props.load(resource.getInputStream());
 	            for (String key : props.stringPropertyNames()) {
-	            	curr_props.put(key, props.getProperty(key));
+	            	curr_props.put(key, props.getProperty(key).trim());
 	            }
 		 } catch (IOException e) {
 	        	
