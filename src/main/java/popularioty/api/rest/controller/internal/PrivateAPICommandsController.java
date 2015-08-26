@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import popularioty.api.rest.messages.input.FeedbackCreate;
 import popularioty.api.services.FeedbackStorageService;
+import popularioty.api.services.PropertiesLoader;
 import popularioty.api.services.io.DocumentDatabase;
 import popularioty.commons.exception.PopulariotyException;
 
@@ -45,10 +46,17 @@ public class PrivateAPICommandsController
 	//TODO fix this for the future with some authentication technique...
 	private String fixedToken = "IYao9AeJcaUzhLPB0P1B";
 	
+	
 	public PrivateAPICommandsController()
 	{
-		//should be extracted to properties is this actually ever used.
-		allowedSets.add("feedback");
+		//to provide feedback massively for demo.
+		Map<String,Object> properties = PropertiesLoader.loadSearchConfiuration("search.properties");
+		allowedSets.add((String) properties.get("index.feedback"));
+		properties = PropertiesLoader.loadSearchConfiuration("storage.properties");
+		//for the private API
+		allowedSets.add((String) properties.get("storage.application_popularity"));
+		allowedSets.add((String) properties.get("storage.application_activity"));
+		
 	}
 	
 	@RequestMapping(value = "{set}/", method = RequestMethod.POST, produces = "application/json")
@@ -59,7 +67,7 @@ public class PrivateAPICommandsController
         		@Valid  @RequestBody List<Map<String,Object>> message,
         		HttpServletRequest req) 
         {
-		    if(!allowedSets.contains(set) || !token.equals(fixedToken))
+		    if(!allowedSets.contains(set) || !token.equals(fixedToken))	
 		    	return new ResponseEntity<Object>( HttpStatus.FORBIDDEN);
 			String id = "";
 			HttpHeaders headers = new HttpHeaders();
@@ -72,7 +80,7 @@ public class PrivateAPICommandsController
 							id = (String) doc.get(idField);
 					}
 					if("".equals(id))
-						id = UUID.randomUUID().toString().replace("-", "")+System.currentTimeMillis();
+						id = System.currentTimeMillis()+UUID.randomUUID().toString().replace("-", "");
 					storeService.storeData(id, doc, set);
 				}
 				return new ResponseEntity<Object>(null, headers, HttpStatus.OK);
