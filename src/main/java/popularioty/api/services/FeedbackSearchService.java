@@ -43,7 +43,19 @@ public class FeedbackSearchService {
 	}
 	public Map<String,Object> getFeedbackById(String id) throws Exception
 	{
-		return docService.getFeedbackById(id);
+		Query q = new Query(QueryType.SELECT);
+		
+		q.addCriteria(new SearchCriteria<String>("feedback_id", id, SearchCriteriaType.MUST_MATCH));
+		
+		q.addCriteria(new SortCriteria<Integer>(SortCriteriaConstants.FIELD_FROM, 0, SortCriteriaType.RANGE));
+		q.addCriteria(new SortCriteria<Integer>(SortCriteriaConstants.FIELD_SIZE, 1, SortCriteriaType.RANGE));
+		q.addCriteria(new SortCriteria<String>("date", SortCriteriaConstants.VALUE_DESC, SortCriteriaType.SORT));
+		QueryResponse res = docService.executeQuery(q,this.prop_index_feedback);
+		List<Map<String, Object>> l = res.getListofMapsResult();
+		if(l == null || l.isEmpty())
+			throw new PopulariotyException("Feedback with id"+id+" not found",null,LOG,"Feedback with id"+id+" not found" ,Level.DEBUG,404);
+		return l.get(0);
+		
 	}
 	
 	public List<Map<String,Object>> getFeedbackForEntity(String entityType, String entityId, String groupId, int from, int size) throws PopulariotyException

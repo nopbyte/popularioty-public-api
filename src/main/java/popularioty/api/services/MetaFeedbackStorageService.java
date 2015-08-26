@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import popularioty.api.services.idm.AuthenticateUser;
 import popularioty.api.services.io.DocumentDatabase;
 import popularioty.commons.exception.PopulariotyException;
+import popularioty.commons.exception.PopulariotyException.Level;
 
 @Service
 public class MetaFeedbackStorageService{
@@ -33,6 +34,9 @@ public class MetaFeedbackStorageService{
 
 	@Autowired
 	private AuthenticateUser auth;
+	
+	@Autowired
+	FeedbackSearchService fSearch;
 	
 	
 	private Object getGroupsFromMemberships(Object object) {
@@ -52,34 +56,18 @@ public class MetaFeedbackStorageService{
 		this.metaFeedbackSetName= (String) properties.get("index.metafeedback");
 	}
 	
-	public Map createMetaFeedbackEntry(String feedbackId, String token, String title, String text, boolean rating) throws PopulariotyException
+	public Map createMetaFeedbackEntry(String feedbackId, String token, String title, String text, boolean rating) throws Exception
 	{
         
 		String id = UUID.randomUUID().toString().replaceAll("-", "");
+		
 		Map<String,Object> attributes = auth.attributesFromUser(token);
-		Map<String,Object> feedback = search.getFeedbackById(feedbackId);
+		Map<String,Object> feedback = fSearch.getFeedbackById(feedbackId);
 		int repValue = 4;
 
 		//TODO include verification that the entity has been used indeed before by this user.
 		
-		//...........................................
-		//...........................................
-		//...........................................
-		//...........................................
-		//...........................................
-		//...........................................
-		//...........................................
-		//...........................................
-		//...........................................
-		// INCLUDE REPUTATION OF THE USER IN THE DOCUMENT!! THIS AFFECTS HOW HEAVY THE FEEDBACK IS!
-		//...........................................
-		//...........................................
-		//...........................................
-		//...........................................
-		//...........................................
-		//...........................................
-		//...........................................
-		//...........................................
+		
 		System.out.println(attributes.toString());
 		Map<String, Object> document = new HashMap<String, Object>();
 		document.put("feedback", feedback);

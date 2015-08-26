@@ -61,10 +61,6 @@ public class DocumentDatabase implements DisposableBean{
 	}
 
 
-	public Map<String, Object> getFeedbackById(String id) throws PopulariotyException {
-		
-		return null;// storageService.getData(id, ((String)properties.get("index.feedback")),"feedback_id");
-	}
 	
 	
 	/////// AFTER

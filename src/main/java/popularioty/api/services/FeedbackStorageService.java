@@ -15,13 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
-import com.sun.org.apache.xml.internal.utils.IntVector;
-
 import popularioty.api.services.idm.AuthenticateUser;
 import popularioty.api.services.idm.FindEntityAttributes;
 import popularioty.api.services.io.DocumentDatabase;
 import popularioty.commons.exception.PopulariotyException;
-import popularioty.commons.exception.PopulariotyException.Level;
 
 @Service
 public class FeedbackStorageService{
