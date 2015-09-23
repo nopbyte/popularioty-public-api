@@ -56,7 +56,7 @@ public class AggregatedReputationSearchService {
 	public Map<String, Object> getSubReputationSearch(
 			String entityId, String entityType, String classReputationType) throws PopulariotyException{
 		
-		Query q = new Query(QueryType.SELECT_ID);
+		Query q = new Query(QueryType.SELECT);
 		if(entityType!=null&& !entityType.equals(""))
 			q.addCriteria(new SearchCriteria<String>("entity_type", entityType, SearchCriteriaType.MUST_MATCH));
 		q.addCriteria(new SearchCriteria<String>("sub_reputation_type", classReputationType, SearchCriteriaType.MUST_MATCH));
@@ -67,7 +67,10 @@ public class AggregatedReputationSearchService {
 		q.addCriteria(new SortCriteria<String>("date", SortCriteriaConstants.VALUE_DESC, SortCriteriaType.SORT));
 		
 		QueryResponse res = docService.executeQuery(q,this.prop_index_subreputation);
-		return res.getMapResult();
+		List<Map<String, Object>> l = res.getListofMapsResult();
+		if(l == null || l.isEmpty())
+			throw new PopulariotyException("Subreputation "+classReputationType+" for entity of type"+entityType+" and entity Id : "+entityId+" not found",null,LOG,"Subreputation "+classReputationType+" for entity of type"+entityType+" and entity Id : "+entityId+" not found" ,Level.DEBUG,404);
+		return l.get(0);
 		
 	}
 	
