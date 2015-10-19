@@ -43,11 +43,12 @@ public class MetaFeedbackStorageService{
 		List list = (List) object;
 		List<String> ret = new LinkedList<String>();
 		Map<String,Object> map = null;
-		for(Iterator<Map> it = list.iterator(); it.hasNext();)
-		{
-			 map=(Map<String, Object>) it.next();
-			 ret.add((String) map.get("group_id"));
-		}
+		if(list != null)
+			for(Iterator<Map> it = list.iterator(); it.hasNext();)
+			{
+				map=(Map<String, Object>) it.next();
+				ret.add((String) map.get("group_id"));
+			}
 		return ret;
 	}	
 	public MetaFeedbackStorageService(){
