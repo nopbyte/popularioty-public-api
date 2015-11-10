@@ -44,8 +44,9 @@ public class PrivateAPICommandsController
 	private List<String> allowedSets = new LinkedList<>();
 	
 	//TODO fix this for the future with some authentication technique...
-	private String fixedToken = "IYao9AeJcaUzhLPB0P1B";
+	private String fixedToken;
 	
+	private long timeout;
 	
 	public PrivateAPICommandsController()
 	{
@@ -57,12 +58,17 @@ public class PrivateAPICommandsController
 		allowedSets.add((String) properties.get("storage.application_popularity"));
 		allowedSets.add((String) properties.get("storage.application_activity"));
 		
+		properties = PropertiesLoader.loadSearchConfiuration("private.api.properties");
+		fixedToken = ((String) properties.get("private.api.token")).trim();
+		
+		
 	}
 	
 	@RequestMapping(value = "{set}/", method = RequestMethod.POST, produces = "application/json")
         public  @ResponseBody ResponseEntity<Object> getReputationData( 
         		@RequestHeader("Authorization") String token,
         		@PathVariable(value="set") String set,
+        		@RequestParam(required=false,value="timeout") int timeout,
         		@RequestParam(required=false,value="id") String idField,
         		@Valid  @RequestBody List<Map<String,Object>> message,
         		HttpServletRequest req) 
@@ -81,7 +87,11 @@ public class PrivateAPICommandsController
 					}
 					if("".equals(id))
 						id = System.currentTimeMillis()+UUID.randomUUID().toString().replace("-", "");
-					storeService.storeData(id, doc, set);
+					if(timeout == 0)
+						storeService.storeData(id, doc, set);
+					else
+						storeService.storeData(id, doc, set,timeout);
+					id = "";
 				}
 				return new ResponseEntity<Object>(null, headers, HttpStatus.OK);
 	    	 }

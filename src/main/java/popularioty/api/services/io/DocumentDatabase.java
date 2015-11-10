@@ -111,6 +111,23 @@ public class DocumentDatabase implements DisposableBean{
 			curr.put(idLabel,id);
 		return curr;
 	}
+
+
+	/**
+	 * 
+	 * @param id
+	 * @param doc
+	 * @param set
+	 * @param timeout in seconds or as date. The latter applies when the timeout value is higher than 30 days ( 60 * 60 * 24 * 30) see 	http://developer.couchbase.com/documentation/server/4.0/developer-guide/expiry.html
+	 * @return
+	 * @throws PopulariotyException
+	 */
+	public Map<String, Object> storeData(String id, Map<String, Object> doc, String set,
+			int timeout) throws PopulariotyException
+	{
+		return store.storeData(id, doc, set,timeout);
+		
+	}
 	
 	
 
