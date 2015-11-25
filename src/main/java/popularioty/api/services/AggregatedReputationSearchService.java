@@ -104,9 +104,12 @@ public class AggregatedReputationSearchService {
 					    	for(String value: att.getValues())
 					    		internal.put(value,  -1);
 					    else
-					    	for(String value: att.getValues())
+					    	for(String value: att.getValues()){
 					    		if(row.containsKey(value))
 					    			internal.put(value,  row.get(value));
+					    		else if(value.equals("total_count") && row.containsKey("count"))
+					    			internal.put(value,  row.get("count"));
+					    	}
 						   
 						   external.put(att.getReputation_type(),internal);
 						   data.setEntity_type( (row!=null)?(String) row.get("entity_type"):"");
