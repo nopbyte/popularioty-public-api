@@ -78,43 +78,35 @@ public class FeedbackStorageService{
         
 		String id = UUID.randomUUID().toString().replaceAll("-", "");
 		Map<String,Object> attributes = auth.attributesFromUser(token);
-		int repValue  = 0;
+		double repValue  = 0;
 		try{
 			Map<String,Object> reputation = repService.getFinalReputationValueForEntity( "user", (String) attributes.get("id"));
-			repValue= ((Integer)reputation.get("end_user_reputation")).intValue();
+			if(reputation.containsKey("end_user_reputation"))
+				repValue= Double.parseDouble((reputation.get("end_user_reputation")).toString());
+			else if(attributes.containsKey("reputation"))
+				repValue = Double.parseDouble(attributes.get("reputation").toString());
 		}catch(PopulariotyException e)
 		{
 			//likely that this is due to an empty index... the analytics has not run yet...
 			if(e.getHTTPErrorCode()==500 && e.getMessage().toLowerCase().contains("search error"))
-				repValue = defRep.defaultReputationValueForEntity(entity_id);
+			{
+				if(attributes.containsKey("reputation"))
+					repValue = Double.parseDouble(attributes.get("reputation").toString());
+				else
+					repValue = defRep.defaultReputationValueForEntity(entity_id);
+			}
+				
 		}
-		/*
-		 *	This is removed until the integration takes place
-		 *  
-		 * 
-		 * */
-		/*Map<String, Object> entityInfo = attr.attributesFromEntity(token, entity_id);
+		Map<String, Object> entityInfo = attr.attributesFromEntity(token, entity_id);
 		if(entityInfo == null || entityInfo.keySet().isEmpty())
-			throw new PopulariotyException("Non existing entity with id: "+entity_id,null,LOG,"Non existent entity with id : "+entity_id+"in IDM.",Level.DEBUG,404);
+			throw new PopulariotyException("Non existing entity with id: "+entity_id,null,LOG,"Non existent entity with id : "+entity_id+"in IDM.",PopulariotyException.Level.DEBUG,404);
 			
 		String key = entityInfo.keySet().iterator().next();
-		Map<String,Object> data = (Map<String, Object>) entityInfo.get(key);
-		String owner = (String) data.get("owner_id");
-		*/
+		Map<String, Object> entityData= (Map<String, Object>) entityInfo.get(key);
+		String owner = (String) entityData.get("owner_id");
 		
-		String owner = "owner_id";
 		
-		//TODO include verification that the entity has been used indeed before by this user.
-		//...........................................
-		//...........................................
-		//...........................................
-		//...........................................
-		// INCLUDE REPUTATION OF THE USER IN THE DOCUMENT!! instead of using 4...
-		//...........................................
-		//...........................................
-		//...........................................
-		//...........................................
-		//...........................................
+	
 		System.out.println(attributes.toString());
 		Map<String, Object> document = new HashMap<String, Object>();
 		document.put("feedback_id", id);
