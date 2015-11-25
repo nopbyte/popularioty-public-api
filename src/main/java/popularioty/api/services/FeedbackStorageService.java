@@ -84,14 +84,14 @@ public class FeedbackStorageService{
 			if(reputation.containsKey("end_user_reputation"))
 				repValue= Double.parseDouble((reputation.get("end_user_reputation")).toString());
 			else if(attributes.containsKey("reputation"))
-				repValue = Double.parseDouble(attributes.get("reputation").toString());
+				repValue = Integer.parseInt(attributes.get("reputation").toString());
 		}catch(PopulariotyException e)
 		{
 			//likely that this is due to an empty index... the analytics has not run yet...
 			if(e.getHTTPErrorCode()==500 && e.getMessage().toLowerCase().contains("search error"))
 			{
 				if(attributes.containsKey("reputation"))
-					repValue = Double.parseDouble(attributes.get("reputation").toString());
+					repValue = Integer.parseInt(attributes.get("reputation").toString());
 				else
 					repValue = defRep.defaultReputationValueForEntity(entity_id);
 			}
