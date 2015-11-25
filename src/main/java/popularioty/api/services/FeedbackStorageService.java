@@ -97,14 +97,16 @@ public class FeedbackStorageService{
 			}
 				
 		}
+		String owner = "none";
 		Map<String, Object> entityInfo = attr.attributesFromEntity(token, entity_id);
-		if(entityInfo == null || entityInfo.keySet().isEmpty())
-			throw new PopulariotyException("Non existing entity with id: "+entity_id,null,LOG,"Non existent entity with id : "+entity_id+"in IDM.",PopulariotyException.Level.DEBUG,404);
-			
-		String key = entityInfo.keySet().iterator().next();
-		Map<String, Object> entityData= (Map<String, Object>) entityInfo.get(key);
-		String owner = (String) entityData.get("owner_id");
-		
+		if(entityInfo == null || entityInfo.keySet().isEmpty()){
+			//throw new PopulariotyException("Non existing entity with id: "+entity_id,null,LOG,"Non existent entity with id : "+entity_id+"in IDM.",PopulariotyException.Level.DEBUG,404);
+		}
+		else{
+			String key = entityInfo.keySet().iterator().next();
+			Map<String, Object> entityData= (Map<String, Object>) entityInfo.get(key);
+			 owner = (String) entityData.get("owner_id");
+		}		
 		
 	
 		System.out.println(attributes.toString());
