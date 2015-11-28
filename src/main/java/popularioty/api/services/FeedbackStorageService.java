@@ -95,6 +95,8 @@ public class FeedbackStorageService{
 				else
 					repValue = defRep.defaultReputationValueForEntity(entity_id);
 			}
+			if(attributes.containsKey("reputation"))
+				repValue = Integer.parseInt(attributes.get("reputation").toString());
 				
 		}
 		String owner = "none";
